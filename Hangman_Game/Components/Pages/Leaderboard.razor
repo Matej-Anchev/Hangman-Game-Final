@@ -1,0 +1,49 @@
+﻿@page "/leaderboard"
+@using Hangman_Game.Resources.Categories
+@inject Hangman_Game.Resources.Categories.LeaderboardService LeaderboardService
+@inject PlayerNickname nicknameService
+@inject NavigationManager Navigation
+
+<div class="leaderboard-container">
+<h3 id="leaderboard-title"><b>🏆 Leaderboard - Top 20</b></h3>
+
+@if (LeaderboardService.Entries.Count == 0)
+{
+	<p>No scores yet.</p>
+} else
+{
+	<table class="leaderboard-table">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Nickname</th>
+				<th>Score</th>
+				<th>Mode</th>
+				<th>Date</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(var (entry, i) in LeaderboardService.Entries.Select((e, i) => (e, i)))
+			{
+				<tr>
+					<td>@(i + 1)</td>
+					<td>@entry.Nickname</td>
+					<td>@entry.Score</td>
+					<td>@entry.GameMode</td>
+					<td>@entry.DateAchieved.ToShortDateString()</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+</div>
+<button class="backButton" @onclick='() => Navigation.NavigateTo("/")'>
+	Back
+</button>
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		await LeaderboardService.LoadAsync();
+	}
+}

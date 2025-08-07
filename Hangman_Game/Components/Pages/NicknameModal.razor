@@ -1,0 +1,75 @@
+﻿@using Hangman_Game.Resources.Categories;
+@using System.Text.RegularExpressions
+@inject PlayerNickname nicknameService
+
+@if (isVisible)
+{
+	<div class="modal-backdrop">
+		<div class="modal-nickname-content">
+			<h3>Enter your Nickname:</h3>
+
+			<form class="nickname-submit" @onsubmit="HandleSubmit">
+				<input @bind="Nickname" placeholder="Ex: Gamer123" @ref="NicknameInputRef"/>
+				<button type="submit">Start</button>
+
+				@if (!string.IsNullOrEmpty(ValidationMessage))
+				{
+					<p class="validation-error">@ValidationMessage</p>
+				}
+			</form>
+			
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter] public EventCallback<string> OnNicknameSubmitted { get; set; }
+	private ElementReference NicknameInputRef;
+
+	public bool isVisible { get; private set; }
+	private string Nickname { get; set; } = "";
+	private string ValidationMessage = "";
+
+	public async Task Show()
+	{
+		isVisible = true;
+		StateHasChanged();
+
+		await Task.Delay(1);
+		await NicknameInputRef.FocusAsync();
+	}
+
+	public void Hide()
+	{
+		isVisible = false;
+		StateHasChanged();
+	}
+
+	private async Task HandleSubmit()
+	{
+		await Submit();
+	}
+
+	private async Task Submit()
+	{
+		var isValid = !string.IsNullOrWhiteSpace(Nickname)
+						&& Regex.IsMatch(Nickname, @"^[a-zA-Z0-9_]+$");
+
+		if (isValid)
+		{
+			ValidationMessage = "";
+			nicknameService.Nickname = Nickname;
+			isVisible = false;
+			await OnNicknameSubmitted.InvokeAsync(Nickname);
+			StateHasChanged();
+		} else
+		{
+			ValidationMessage = "Only letters, digits and underscores are allowed!";
+		}
+	}
+
+	protected override void OnInitialized()
+	{
+		isVisible = string.IsNullOrWhiteSpace(nicknameService.Nickname);
+	}
+}

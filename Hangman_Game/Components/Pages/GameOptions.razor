@@ -1,0 +1,111 @@
+﻿@page "/gameoptions"
+@using Hangman_Game.Resources.Categories
+@inject NavigationManager Navigation
+@inject PlayerNickname nicknameService
+
+<NicknameModal @ref="NicknameModal" OnNicknameSubmitted="OnNicknameEntered"/>
+
+<div class="home-background">
+    <h3 id="modePicker">Pick a mode:</h3>
+    <div id="GameOptions">
+        <button class="gameOptionsButtons" @onclick='() => Navigation.NavigateTo("/traditional")'>
+            Traditional<br>
+            <span class="Info" role="button" tabindex="0"
+                  @onclick:stopPropagation
+                  @onclick='() => ShowRules("traditional")'
+                  @onkeydown='(e) => HandleInfoKeyPress(e, "traditional")'>
+                Info
+            </span>
+        </button>
+
+
+        <button class="gameOptionsButtons" @onclick='() => Navigation.NavigateTo("/timed")'>
+            Timed<br>
+            <span class="Info" role="button" tabindex="0"
+                  @onclick:stopPropagation
+                  @onclick='() => ShowRules("timed")'
+                  @onkeydown='(e) => HandleInfoKeyPress(e, "timed")'>
+                Info
+            </span>
+        </button>
+
+
+        <button class="gameOptionsButtons" @onclick='() => Navigation.NavigateTo("/survival")'>
+            Survival<br>
+            <span class="Info" role="button" tabindex="0"
+                  @onclick:stopPropagation
+                  @onclick='() => ShowRules("survival")'
+                  @onkeydown='(e) => HandleInfoKeyPress(e, "survival")'>
+                Info
+            </span>
+        </button>
+
+    </div>
+
+    @if (showRulesModal)
+    {
+        <div class="modal-backdrop" @onclick="CloseRules">
+            <div class="modal-content" @onclick:stopPropagation>
+                <h3>Game Rules</h3>
+                <p>@rulesText</p>
+                <button @onclick="CloseRules">Close</button>
+            </div>
+        </div>
+    }
+
+    <button class="backButton" @onclick='() => Navigation.NavigateTo("/")'>
+        Back
+    </button>
+</div>
+
+@code {
+    private NicknameModal NicknameModal;
+    private bool showRulesModal = false;
+    private string rulesText = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !PlayerNickname.HasShownNicknameModalStatic)
+        {
+            PlayerNickname.HasShownNicknameModalStatic = true;
+            await Task.Yield();
+            NicknameModal.Show();
+        }
+    }
+
+    private void OnNicknameEntered(string nickname)
+    {
+        nicknameService.Nickname = nickname;
+    }
+
+    private void ShowRules(string mode)
+    {
+        switch (mode)
+        {
+            case "traditional":
+                rulesText = "Guess the word by selecting letters.";
+                break;
+            case "timed":
+                rulesText = "You have 90 seconds to guess the word.";
+                break;
+            case "survival":
+                rulesText = "Continue guessing words while you still have lives";
+                break;
+        }
+
+        showRulesModal = true;
+    }
+
+    private void HandleInfoKeyPress(KeyboardEventArgs e, string mode)
+    {
+        if (e.Key == "Enter" || e.Key == " ")
+        {
+            ShowRules(mode);
+        }
+    }
+
+    private void CloseRules()
+    {
+        showRulesModal = false;
+    }
+}

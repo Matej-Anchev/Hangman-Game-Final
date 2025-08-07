@@ -1,0 +1,11 @@
+wwwroot\css\app.css
+wwwroot\css\bootstrap\bootstrap.min.css
+wwwroot\css\bootstrap\bootstrap.min.css.map
+wwwroot\Images\hangman.png
+wwwroot\Images\home-background-1.png
+wwwroot\Images\square-background.jpg
+wwwroot\index.html
+C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\wwwroot\index.html
+C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\wwwroot\css\app.css
+C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\wwwroot\css\bootstrap\bootstrap.min.css
+C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\wwwroot\css\bootstrap\bootstrap.min.css.map

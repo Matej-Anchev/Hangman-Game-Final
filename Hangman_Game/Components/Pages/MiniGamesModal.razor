@@ -1,0 +1,87 @@
+﻿@* @if (IsVisible)
+{
+    <div class="modal-backdrop">
+        <div class="modal-content">
+            @if (!AwaitingAnswer)
+            {
+                <p>Options count: @(Options?.Count ?? 0)</p>
+                <h4>Choose a minigame:</h4>
+                <button class="minigame-button" @onclick='() => SelectMinigame("Math")'>Math</button>
+                <button class="minigame-button" @onclick='() => SelectMinigame("Grammar")'>Grammar</button>
+            }
+            else
+            {
+                <h4>@Question</h4>
+
+                @if (Options != null && Options.Count > 0)
+                {
+                    @for (int i = 0; i < Options.Count; i++)
+                    {
+                        <button class="option-button"
+                                disabled="@(Options == null || i >= Options.Count || isAnswerSubmitted)"
+                                @onclick="() => SubmitAnswer(i)">
+                            @Options[i]
+                        </button>
+                    }
+                }
+                else
+                {
+                    <p>No options available.</p>
+                }
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private bool IsVisible = false;
+    private bool isAnswerSubmitted = false;
+
+    [Parameter] public bool AwaitingAnswer { get; set; }
+    [Parameter] public string Question { get; set; } = "";
+    [Parameter] public List<string> Options { get; set; } = new();
+
+    [Parameter] public EventCallback<string> OnSelectMinigame { get; set; }
+    [Parameter] public EventCallback<int> OnSubmitAnswer { get; set; }
+
+    public void Show()
+    {
+        isAnswerSubmitted = false;
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    public void Hide()
+    {
+        IsVisible = false;
+        Options = new List<string>();
+        Question = "";
+        AwaitingAnswer = false;
+        StateHasChanged();
+    }
+
+    private async Task SelectMinigame(string minigame)
+    {
+        if (OnSelectMinigame.HasDelegate)
+        {
+            await OnSelectMinigame.InvokeAsync(minigame);
+        }
+    }
+
+    private async Task SubmitAnswer(int i)
+    {
+        if (Options != null && i >= 0 && i < Options.Count)
+        {
+            Console.WriteLine($"[MiniGamesModal] Button clicked: {i}, Option: {Options[i]}");
+        }
+        else
+        {
+            Console.WriteLine($"[MiniGamesModal] Invalid index clicked: {i}, Options count: {(Options?.Count ?? 0)}");
+        }
+
+        if (OnSubmitAnswer.HasDelegate)
+        {
+            await OnSubmitAnswer.InvokeAsync(i);
+        }
+    }
+} *@

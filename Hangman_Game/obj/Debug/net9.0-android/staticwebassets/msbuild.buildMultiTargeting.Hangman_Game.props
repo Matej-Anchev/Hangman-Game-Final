@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Hangman_Game.props" />
+</Project>

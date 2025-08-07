@@ -1,0 +1,289 @@
+﻿@page "/timed"
+@inject NavigationManager Navigation
+@inject PlayerNickname nicknameService
+@inject LeaderboardService LeaderboardService
+@using Hangman_Game.Resources.Categories
+
+<div class="backgroundGames">
+<div class="container" @ref="GameContainer" tabindex="0" @onkeydown="HandleKeyPress">
+
+<h3 class="titleGames">Timed Hangman</h3>
+
+<CategoryModal @ref="CategoryModal" OnCategorySelected="CategorySelected" />
+
+<div id="sameLine">
+<p>Category: <b>@selectedCategory</b></p>
+<p>Time remaining: <b>@TimeDisplay</b></p>
+</div>
+
+<svg width="200" height="250" style="margin-bottom: 20px;">
+	<!-- Gallows -->
+	<line x1="50" y1="230" x2="150" y2="230" stroke="black" stroke-width="4" /> <!-- Base -->
+	<line x1="100" y1="230" x2="100" y2="50" stroke="black" stroke-width="4" /> <!-- Pole -->
+	<line x1="100" y1="50" x2="160" y2="50" stroke="black" stroke-width="4" /> <!-- Top -->
+	<line x1="160" y1="50" x2="160" y2="70" stroke="black" stroke-width="4" /> <!-- Rope -->
+	<!-- Head -->
+	@if (WrongGuesses > 0)
+	{
+		<circle cx="160" cy="85" r="15" stroke="black" stroke-width="3" fill="none" />
+	}
+
+	<!-- Body -->
+	@if (WrongGuesses > 1)
+	{
+		<line x1="160" y1="100" x2="160" y2="150" stroke="black" stroke-width="3" />
+	}
+
+	<!-- Left Arm -->
+	@if (WrongGuesses > 2)
+	{
+		<line x1="160" y1="110" x2="140" y2="130" stroke="black" stroke-width="3" />
+	}
+
+	<!-- Right Arm -->
+	@if (WrongGuesses > 3)
+	{
+		<line x1="160" y1="110" x2="180" y2="130" stroke="black" stroke-width="3" />
+	}
+
+	<!-- Left Leg -->
+	@if (WrongGuesses > 4)
+	{
+		<line x1="160" y1="150" x2="140" y2="180" stroke="black" stroke-width="3" />
+	}
+
+	<!-- Right Leg -->
+	@if (WrongGuesses > 5)
+	{
+		<line x1="160" y1="150" x2="180" y2="180" stroke="black" stroke-width="3" />
+	}
+</svg>
+
+<p>Guess the word:</p>
+
+<p>
+	@foreach (var c in DisplayWord)
+	{
+		<span style="font-size: 2em; margin-right: 10px;">@c</span>
+	}
+</p>
+
+<p>Wrong guesses: (@WrongGuesses / @MaxWrongGuesses)</p>
+
+<button class="backButton" @onclick='() => Navigation.NavigateTo("/gameoptions")'>
+	Back
+</button>
+
+@if (IsGameOver)
+{
+	@if (IsWin)
+	{
+		<p style="color:green; font-weight:bold;">You won! 🎉</p>
+	}
+	else
+	{
+		<p style="color:red; font-weight:bold;">You lost! The word was: <b>@Word</b></p>
+	}
+	<button @onclick="StartNewGame">Play Again</button>
+}
+else
+{
+	<p>Pick a letter:</p>
+
+	<button @onclick="UseHelp"
+			disabled="@(!CanUseHelp)"
+			style="background-color:@HelpButtonColor; font-weight:bold; margin-bottom: 10px;">
+		Help
+		(@HelpUsesRemaining left)
+	</button>
+
+	<div class="ButtonContainer">
+		@foreach (var letter in Alphabet)
+		{
+			<button class="letterButton" @onclick="() => GuessLetter(letter)" disabled="@UsedLetters.Contains(letter)">
+				@letter
+			</button>
+		}
+	</div>
+}
+
+
+</div> 
+</div>
+@code {
+	private ElementReference GameContainer;
+	private string Word = string.Empty;
+	private HashSet<char> UsedLetters = new();
+	private const int MaxWrongGuesses = 6;
+	private List<char> Alphabet = Enumerable.Range('A', 26).Select(c => (char)c).ToList();
+
+	private int HelpUsesRemaining = 2;
+
+
+	private int TotalTimeSeconds = 90;
+	private int RemainingSeconds;
+	private System.Threading.Timer timer;
+
+	private CategoryModal CategoryModal;
+	private bool IsCategorySelected = false;
+	private string selectedCategory;
+
+	private bool IsGameOver => IsWin || WrongGuesses >= MaxWrongGuesses || RemainingSeconds <= 0;
+	private bool IsWin => Word.All(c => UsedLetters.Contains(char.ToUpper(c)));
+	private bool CanUseHelp => HelpUsesRemaining > 0 && !IsGameOver;
+	private string HelpButtonColor => CanUseHelp ? "yellow" : "lightgray";
+
+	private bool scoreAdded = false;
+
+	private IEnumerable<char> DisplayWord =>
+		Word.Select(c => UsedLetters.Contains(char.ToUpper(c)) ? c : '_');
+
+	private int WrongGuesses => UsedLetters.Count(c => !Word.ToUpper().Contains(c));
+
+	private string TimeDisplay => $"{RemainingSeconds / 60:D2}:{RemainingSeconds % 60:D2}";
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender && !IsCategorySelected)
+		{
+			CategoryModal.Show();
+		}
+
+		if (GameContainer.Context != null)
+		{
+			await GameContainer.FocusAsync();
+		}
+
+		if (IsGameOver)
+		{
+			await AddResultIfGameOver();
+		}
+	}
+
+	private void StartNewGame()
+	{
+
+		if (!IsCategorySelected)
+		{
+			return;
+		}
+
+		var words = WordRepository.GetWordsByCategory(selectedCategory);
+		if (words == null || words.Count == 0)
+		{
+			Word = string.Empty;
+			return;
+		}
+
+		var random = new Random();
+		Word = words[random.Next(words.Count)];
+		UsedLetters.Clear();
+		HelpUsesRemaining = 2;
+
+		RemainingSeconds = TotalTimeSeconds;
+		StartTimer();
+	}
+
+	private void StartTimer()
+	{
+		timer?.Dispose();
+		timer = new System.Threading.Timer(async _ =>
+		{
+			if (RemainingSeconds > 0 && !IsGameOver)
+			{
+				RemainingSeconds--;
+				await InvokeAsync(StateHasChanged);
+			}
+			else
+			{
+				timer?.Dispose();
+			}
+		}, null, 1000, 1000);
+	}
+
+	private void GuessLetter(char letter)
+	{
+		letter = char.ToUpper(letter);
+
+		if (UsedLetters.Contains(letter) || IsGameOver)
+			return;
+
+		UsedLetters.Add(letter);
+
+		if (IsGameOver)
+		{
+			timer?.Dispose();
+		}
+	}
+
+	private void UseHelp()
+	{
+		if (!CanUseHelp)
+			return;
+
+		var unusedLetters = Word.ToUpper()
+			.Where(c => !UsedLetters.Contains(c))
+			.Distinct()
+			.ToList();
+
+		if (unusedLetters.Count == 0)
+			return;
+
+		var random = new Random();
+		var hintLetter = unusedLetters[random.Next(unusedLetters.Count)];
+		UsedLetters.Add(hintLetter);
+
+		HelpUsesRemaining--;
+
+
+		RemainingSeconds = Math.Max(0, RemainingSeconds - 10);
+
+		if (IsGameOver)
+		{
+			timer?.Dispose();
+		}
+	}
+
+	public void Dispose()
+	{
+		timer?.Dispose();
+	}
+
+	private void CategorySelected(string category)
+	{
+		selectedCategory = category;
+		IsCategorySelected = true;
+
+		StartNewGame();
+
+		CategoryModal.Hide();
+	}
+
+	private async Task AddResultIfGameOver()
+	{
+		if (IsGameOver && !scoreAdded)
+		{
+			scoreAdded = true;
+
+			int baseScore = 500;
+			int penalty = WrongGuesses * 50 + (2 - HelpUsesRemaining) * 25;
+			int score = IsWin ? Math.Max(0, baseScore - penalty) : 0;
+			var entry = new LeaderboardEntry
+				{
+					Nickname = nicknameService.Nickname,
+					Score = score,
+					GameMode = "Timed",
+					DateAchieved = DateTime.Now
+				};
+
+			await LeaderboardService.AddEntryAsync(entry);
+		}
+	}
+
+	private void HandleKeyPress(KeyboardEventArgs e)
+	{
+		if (IsGameOver || string.IsNullOrWhiteSpace(e.Key)) return;
+		char KeyChar = char.ToUpper(e.Key[0]);
+		if (char.IsLetter(KeyChar)) GuessLetter(KeyChar);
+	}
+}

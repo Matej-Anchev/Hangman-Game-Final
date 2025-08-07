@@ -1,0 +1,45 @@
+﻿@using Hangman_Game.Resources.Categories
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop">
+        <div class="modal-content">
+            <h3>Select Category:</h3>
+            <ul>
+                @foreach (var category in WordRepository.GetCategoryNames())
+                {
+                    <li>
+                        <button class="categoryButtons" @onclick="() => SelectCategory(category)">@category</button>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public EventCallback<string> OnCategorySelected { get; set; }
+
+    public bool IsVisible { get; private set; }
+
+    
+    public void Show()
+    {
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    
+    public void Hide()
+    {
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    private async Task SelectCategory(string category)
+    {
+        IsVisible = false;
+        await OnCategorySelected.InvokeAsync(category);
+        StateHasChanged();
+    }
+}

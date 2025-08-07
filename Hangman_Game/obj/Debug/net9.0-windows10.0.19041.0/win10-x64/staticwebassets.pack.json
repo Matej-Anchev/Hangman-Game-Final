@@ -1,0 +1,57 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\scopedcss\\bundle\\Hangman_Game.styles.css",
+      "PackagePath": "staticwebassets\\Hangman_Game.styles.css"
+    },
+    {
+      "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\wwwroot\\Images\\hangman.png",
+      "PackagePath": "staticwebassets\\Images\\hangman.png"
+    },
+    {
+      "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\wwwroot\\Images\\home-background-1.png",
+      "PackagePath": "staticwebassets\\Images\\home-background-1.png"
+    },
+    {
+      "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\wwwroot\\Images\\square-background.jpg",
+      "PackagePath": "staticwebassets\\Images\\square-background.jpg"
+    },
+    {
+      "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\wwwroot\\css\\app.css",
+      "PackagePath": "staticwebassets\\css\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\staticwebassets\\msbuild.Hangman_Game.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\staticwebassets\\msbuild.Hangman_Game.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\staticwebassets\\msbuild.build.Hangman_Game.props",
+      "PackagePath": "build\\Hangman_Game.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\staticwebassets\\msbuild.buildMultiTargeting.Hangman_Game.props",
+      "PackagePath": "buildMultiTargeting\\Hangman_Game.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-windows10.0.19041.0\\win10-x64\\staticwebassets\\msbuild.buildTransitive.Hangman_Game.props",
+      "PackagePath": "buildTransitive\\Hangman_Game.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

@@ -1,0 +1,222 @@
+﻿@page "/survival"
+@inject NavigationManager Navigation
+@inject PlayerNickname nicknameService
+@inject LeaderboardService LeaderboardService
+@using Hangman_Game.Resources.Categories
+
+<div class="backgroundGames">
+<div class="container" @ref="GameContainer" tabindex="0" @onkeydown="HandleKeyPress">
+<h3 class="titleGames">Survival Mode</h3>
+
+<CategoryModal @ref="CategoryModal" OnCategorySelected="CategorySelected" />
+<p>Category: <b>@selectedCategory</b> Words completed: <b>@WordsCompleted</b></p>
+
+<svg width="200" height="250" style="margin-bottom: 20px;">
+	<line x1="50" y1="230" x2="150" y2="230" stroke="black" stroke-width="4" />
+	<line x1="100" y1="230" x2="100" y2="50" stroke="black" stroke-width="4" />
+	<line x1="160" y1="50" x2="100" y2="50" stroke="black" stroke-width="4" />
+	<line x1="160" y1="50" x2="160" y2="70" stroke="black" stroke-width="4" />
+	@if (WrongGuessesTotal > 0) { <circle cx="160" cy="85" r="15" stroke="black" stroke-width="3" fill="none" /> }
+	@if (WrongGuessesTotal > 1) { <line x1="160" y1="100" x2="160" y2="150" stroke="black" stroke-width="3" /> }
+	@if (WrongGuessesTotal > 2) { <line x1="160" y1="110" x2="140" y2="130" stroke="black" stroke-width="3" /> }
+	@if (WrongGuessesTotal > 3) { <line x1="160" y1="110" x2="180" y2="130" stroke="black" stroke-width="3" /> }
+	@if (WrongGuessesTotal > 4) { <line x1="160" y1="150" x2="140" y2="180" stroke="black" stroke-width="3" /> }
+	@if (WrongGuessesTotal > 5) { <line x1="160" y1="150" x2="180" y2="180" stroke="black" stroke-width="3" /> }
+</svg>
+
+<p>Guess the word:</p>
+
+<p>
+	@foreach (var c in DisplayWord)
+	{
+		<span style="font-size: 2em; margin-right: 10px;">@c</span>
+	}
+</p>
+
+<p>Wrong guesses: (@WrongGuessesTotal / @MaxWrongGuesses)</p>
+
+<button class="backButton" @onclick='() => Navigation.NavigateTo("/gameoptions")'>
+	Back
+</button>
+
+@if (IsGameOver)
+{
+	<p style="color:red; font-weight:bold;">Game Over! You survived @WordsCompleted words.</p>
+	<button @onclick="RestartSurvival">Try Again</button>
+}
+else
+{
+	<p>Pick a letter:</p>
+
+	<button @onclick="UseHelp"
+			disabled="@(!CanUseHelp)"
+			style="background-color:@HelpButtonColor; font-weight:bold; margin-bottom: 10px;">
+		Help
+		(@HelpUsesRemaining left)
+	</button>
+
+	<div class="ButtonContainer">
+		@foreach (var letter in Alphabet)
+{
+    <button class="letterButton"
+            @onclick="() => GuessLetter(letter)"
+            disabled="@UsedLetters.Contains(letter)">
+        @letter
+    </button>
+}
+	</div>
+}
+
+</div>
+</div>
+
+@code {
+	private ElementReference GameContainer;
+	private string Word = string.Empty;
+	private HashSet<char> UsedLetters = new();
+	private const int MaxWrongGuesses = 6;
+	private List<char> Alphabet = Enumerable.Range('A', 26).Select(c => (char)c).ToList();
+
+	private int HelpUsesRemaining = 2;
+	private int WrongGuessesTotal = 0;
+	private int WordsCompleted = 0;
+
+	private bool IsCategorySelected = false;
+	private string selectedCategory;
+	private CategoryModal CategoryModal;
+	private bool scoreAdded = false;
+
+	private bool IsTransitioningToNextWord = false;
+
+	private bool IsGameOver => WrongGuessesTotal >= MaxWrongGuesses;
+	private bool IsWordComplete => !string.IsNullOrEmpty(Word) && Word.All(c => UsedLetters.Contains(char.ToUpper(c)));
+	private bool CanUseHelp => HelpUsesRemaining > 0 && !IsGameOver && !IsTransitioningToNextWord;
+	private string HelpButtonColor => CanUseHelp ? "yellow" : "lightgray";
+
+	private IEnumerable<char> DisplayWord =>
+		Word.Select(c => UsedLetters.Contains(char.ToUpper(c)) ? c : '_');
+
+	private int WrongGuesses => UsedLetters.Count(c => !Word.ToUpper().Contains(c));
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender && !IsCategorySelected)
+		{
+			CategoryModal.Show();
+		}
+
+		if (GameContainer.Context != null)
+		{
+			await GameContainer.FocusAsync();
+		}
+
+		if (IsGameOver)
+		{
+			await AddResultIfGameOver();
+		}
+		else if (IsWordComplete && !IsTransitioningToNextWord)
+		{
+			IsTransitioningToNextWord = true;
+			StateHasChanged();
+			await Task.Delay(2000); // delay before next word
+			WordsCompleted++;
+			StartNextWord();
+			IsTransitioningToNextWord = false;
+			StateHasChanged();
+		}
+	}
+
+	private void StartNextWord()
+	{
+		var words = WordRepository.GetWordsByCategory(selectedCategory);
+		if (words == null || words.Count == 0)
+		{
+			Word = string.Empty;
+			return;
+		}
+
+		var random = new Random();
+		Word = words[random.Next(words.Count)];
+		UsedLetters.Clear();
+		HelpUsesRemaining = 2;
+		scoreAdded = false;
+	}
+
+	private void RestartSurvival()
+	{
+		WrongGuessesTotal = 0;
+		WordsCompleted = 0;
+		scoreAdded = false;
+		IsTransitioningToNextWord = false;
+		StartNextWord();
+	}
+
+	private void GuessLetter(char letter)
+	{
+		if (UsedLetters.Contains(letter) || IsGameOver || IsTransitioningToNextWord) return;
+
+		letter = char.ToUpper(letter);
+
+		if (!Word.ToUpper().Contains(letter))
+		{
+			WrongGuessesTotal++;
+		}
+
+		UsedLetters.Add(letter);
+	}
+
+	private void UseHelp()
+	{
+		if (!CanUseHelp) return;
+
+		var unusedLetters = Word.ToUpper()
+			.Where(c => !UsedLetters.Contains(c))
+			.Distinct()
+			.ToList();
+
+		if (unusedLetters.Count == 0) return;
+
+		var random = new Random();
+		var hintLetter = unusedLetters[random.Next(unusedLetters.Count)];
+		UsedLetters.Add(hintLetter);
+		HelpUsesRemaining--;
+	}
+
+	private async Task CategorySelected(string category)
+	{
+		selectedCategory = category;
+		IsCategorySelected = true;
+		RestartSurvival();
+		CategoryModal.Hide();
+		await Task.Yield();
+		await GameContainer.FocusAsync();
+	}
+
+	private void HandleKeyPress(KeyboardEventArgs e)
+	{
+		if (IsGameOver || IsTransitioningToNextWord || string.IsNullOrWhiteSpace(e.Key)) return;
+
+		char KeyChar = char.ToUpper(e.Key[0]);
+		if (char.IsLetter(KeyChar)) GuessLetter(KeyChar);
+	}
+
+	private async Task AddResultIfGameOver()
+	{
+		if (IsGameOver && !scoreAdded)
+		{
+			scoreAdded = true;
+
+			int totalScore = WordsCompleted * 100 - WrongGuessesTotal * 25;
+			totalScore = Math.Max(0, totalScore);
+
+			var entry = new LeaderboardEntry
+			{
+				Nickname = nicknameService.Nickname,
+				Score = totalScore,
+				GameMode = "Survival",
+				DateAchieved = DateTime.Now
+			};
+			await LeaderboardService.AddEntryAsync(entry);
+		}
+	}
+}
