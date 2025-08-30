@@ -2,7 +2,7 @@
 
 @if (IsVisible)
 {
-    <div class="modal-backdrop">
+    <div class="modal-backdrop" @onkeydown="BlockKeyboard" @onkeydown:preventDefault @onkeypress="BlockKeyboard" @onkeypress:preventDefault @onkeyup="BlockKeyboard" @onkeyup:preventDefault>
         <div class="modal-content">
             <h3>Select Category:</h3>
             <ul>
@@ -22,14 +22,23 @@
 
     public bool IsVisible { get; private set; }
 
-    
+    // Block keyboard events from propagating to parent components
+    private void BlockKeyboard(KeyboardEventArgs e)
+    {
+        // Allow Tab key for accessibility navigation
+        if (e.Key != "Tab")
+        {
+            // Prevent default and stop propagation for all other keys
+            // This will prevent the keyboard events from reaching the game
+        }
+    }
+
     public void Show()
     {
         IsVisible = true;
         StateHasChanged();
     }
 
-    
     public void Hide()
     {
         IsVisible = false;

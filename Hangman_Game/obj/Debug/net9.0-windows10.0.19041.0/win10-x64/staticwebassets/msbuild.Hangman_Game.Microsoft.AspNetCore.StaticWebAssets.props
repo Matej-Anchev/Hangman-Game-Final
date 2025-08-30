@@ -12,12 +12,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>32ndpb58ec</Fingerprint>
-      <Integrity>BTWFODWMJT/N/wsi5TGD/Zr9A3ikk6nBsFxdJmf4gv4=</Integrity>
+      <Fingerprint>spglt68qch</Fingerprint>
+      <Integrity>IKPu2LGrLZK3kKklUc9hb3TFPC9Hm3z2FZrOyxP0MEw=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>8986</FileLength>
-      <LastWriteTime>Wed, 25 Jun 2025 11:39:34 GMT</LastWriteTime>
+      <FileLength>10231</FileLength>
+      <LastWriteTime>Sat, 30 Aug 2025 15:55:25 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\app.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\bootstrap\bootstrap.min.css'))">
@@ -119,6 +119,26 @@
       <FileLength>263467</FileLength>
       <LastWriteTime>Mon, 09 Jun 2025 15:17:38 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Images\home-background-1.png'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Images\leaderboard.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Hangman_Game</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>/</BasePath>
+      <RelativePath>Images/leaderboard.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>8o6klyi85c</Fingerprint>
+      <Integrity>OISX6gOexdHdiMuwNpIO1c/rsEpxFctbRZv1Oql+qsg=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <FileLength>139039</FileLength>
+      <LastWriteTime>Mon, 11 Aug 2025 15:50:49 GMT</LastWriteTime>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Images\leaderboard.png'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Images\square-background.jpg'))">
       <SourceType>Package</SourceType>

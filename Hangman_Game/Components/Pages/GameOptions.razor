@@ -47,8 +47,8 @@
         <div class="modal-backdrop" @onclick="CloseRules">
             <div class="modal-content" @onclick:stopPropagation>
                 <h3>Game Rules</h3>
-                <p>@rulesText</p>
-                <button @onclick="CloseRules">Close</button>
+                <p>@((MarkupString)rulesText)</p>
+                <button id = "closeButton" @onclick="CloseRules">Close</button>
             </div>
         </div>
     }
@@ -83,13 +83,34 @@
         switch (mode)
         {
             case "traditional":
-                rulesText = "Guess the word by selecting letters.";
+                rulesText = "<b> Welcome to Traditional Hangman! <br>" +
+                            "1. Your goal is to guess the hidden word by selecting letters one at a time.<br>" +
+                            "2. Each correct letter reveals its position(s) in the word.<br>" +
+                            "3. Each incorrect guess brings you closer to losing by drawing the hangman.<br>" +
+                            "4. You lose if the hangman drawing is completed before the word is guessed.<br>" +
+                            "5. Try to guess the word before running out of allowed incorrect guesses.<br>" +
+                            "Good luck!";
                 break;
+
             case "timed":
-                rulesText = "You have 90 seconds to guess the word.";
+                rulesText = "<b> Welcome to Timed Hangman! <br>" +
+                           "1. Your goal is to guess the hidden word by selecting letters one at a time.<br>" +
+                           "2. Each correct letter reveals its position(s) in the word.<br>" +
+                           "3. Each incorrect guess brings you closer to losing by drawing the hangman.<br>" +
+                           "4. You lose if the hangman drawing is completed before the word is guessed.<br>" +
+                           "5. Try to guess the word before running out of allowed incorrect guesses.<br>" +
+                           "6. You have 90 seconds to guess the word before losing! <br>" +
+                           "Good luck!";
                 break;
             case "survival":
-                rulesText = "Continue guessing words while you still have lives";
+                rulesText = "<b> Welcome to Survival Hangman! <br>" +
+                           "1. Your goal is to guess the hidden word by selecting letters one at a time.<br>" +
+                           "2. Each correct letter reveals its position(s) in the word.<br>" +
+                           "3. Each incorrect guess brings you closer to losing by drawing the hangman.<br>" +
+                           "4. You lose if the hangman drawing is completed before the word is guessed.<br>" +
+                           "5. Try to guess the word before running out of allowed incorrect guesses.<br>" +
+                           "6. Play as long as you still have lives!!! \n" +
+                           "Good luck!";
                 break;
         }
 

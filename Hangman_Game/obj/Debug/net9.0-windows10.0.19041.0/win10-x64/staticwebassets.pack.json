@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\Images\\home-background-1.png"
     },
     {
+      "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\wwwroot\\Images\\leaderboard.png",
+      "PackagePath": "staticwebassets\\Images\\leaderboard.png"
+    },
+    {
       "Id": "C:\\Users\\matej\\source\\repos\\Hangman_Game\\Hangman_Game\\wwwroot\\Images\\square-background.jpg",
       "PackagePath": "staticwebassets\\Images\\square-background.jpg"
     },

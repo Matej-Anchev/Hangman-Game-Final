@@ -532,5 +532,7 @@ C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\obj\Debug\net9.0-windows10
 C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\qualifiers.txt.intermediate
 C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
 C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\Resources\Data\leaderboard.json
-C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\compressed\8tim69jzf7-32ndpb58ec.gz
-C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\compressed\publish\8tim69jzf7-32ndpb58ec.br
+C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\Hangman_Game.sourcelink.json
+C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\wwwroot\Images\leaderboard.png
+C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\compressed\8tim69jzf7-spglt68qch.gz
+C:\Users\matej\source\repos\Hangman_Game\Hangman_Game\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\compressed\publish\8tim69jzf7-spglt68qch.br

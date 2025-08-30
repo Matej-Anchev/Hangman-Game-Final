@@ -29,7 +29,6 @@ a, .btn-link {
     padding-top: 1.1rem;
 }
 
-/*#endif*/
 h1:focus {
     outline: none;
 }
@@ -222,7 +221,7 @@ h1:focus {
 .backButton {
     border-radius: 20px;
     border-width: 4px;
-    border-color: blackgit add .;
+    border-color: black;
     background-color: orange;
     color: white;
     font-weight: bold;
@@ -269,15 +268,26 @@ h1:focus {
     border-color: darkgreen;
     height: 540px;
     width: 440px;
+
+    pointer-events: auto;
+}
+
+.modal-backdrop {
+    pointer-events: auto;
+}
+
+body:has(.modal-backdrop) .game-container {
+    pointer-events: none;
+    user-select: none;
 }
 
 .modal-nickname-content {
     background-color: lightgoldenrodyellow;
-    padding: 20px;
+    padding-top: 30px;
     border-radius: 20px;
+    border: 3px solid black;
     border-width: 8px;
-    border-color: darkblue;
-    height: 250px;
+    height: 220px;
     width: 450px;
 }
 
@@ -356,7 +366,7 @@ h1:focus {
 
 .leaderboard-table {
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-bottom: 100px;
 }
 
 .leaderboard-table th, .leaderboard-table td {
@@ -385,4 +395,54 @@ h1:focus {
 .nickname-submit {
     justify-content: center;
     text-align: center;
+}
+
+#nicknameStart, #closeButton {
+    background-color: orange;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+}
+
+#closeButton {
+    width: 100px;
+    height: 60px;
+    border: 4px solid black;
+    border-radius: 10px;
+    font-size: x-large;
+    justify-content: center;
+    align-self: center;
+
+    margin-top: 30px;
+}
+
+#nicknameStart:hover, #closeButton:hover {
+    transform: scale(1.05);
+}
+
+.leaderboard-container {
+    background-image: url('/Images/leaderboard.png');
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: 100% 100%;
+    background-clip: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centers horizontally */
+    justify-content: flex-start; /* moves everything to top */
+    padding-top: 20px; /* small gap from top if you want */
+}
+
+#leaderboard-title {
+    margin-bottom: 20px;
+}
+
+.leaderboard-table {
+    margin-top: 0;  
 }

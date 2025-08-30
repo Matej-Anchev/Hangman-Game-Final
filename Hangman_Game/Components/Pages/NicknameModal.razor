@@ -6,11 +6,11 @@
 {
 	<div class="modal-backdrop">
 		<div class="modal-nickname-content">
-			<h3>Enter your Nickname:</h3>
+			<h3 id="nicknameTitle">Enter your Nickname:</h3>
 
 			<form class="nickname-submit" @onsubmit="HandleSubmit">
 				<input @bind="Nickname" placeholder="Ex: Gamer123" @ref="NicknameInputRef"/>
-				<button type="submit">Start</button>
+				<button type="submit" id="nicknameStart">Start</button>
 
 				@if (!string.IsNullOrEmpty(ValidationMessage))
 				{
