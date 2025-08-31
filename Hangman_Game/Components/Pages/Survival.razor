@@ -105,7 +105,7 @@ else
 			CategoryModal.Show();
 		}
 
-		if (GameContainer.Context != null)
+		if (GameContainer.Context != null && !CategoryModal.IsVisible)
 		{
 			await GameContainer.FocusAsync();
 		}
@@ -188,6 +188,7 @@ else
 		IsCategorySelected = true;
 		RestartSurvival();
 		CategoryModal.Hide();
+
 		await Task.Yield();
 		await GameContainer.FocusAsync();
 	}

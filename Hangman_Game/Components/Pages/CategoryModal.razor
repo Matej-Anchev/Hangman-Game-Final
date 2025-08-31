@@ -2,8 +2,11 @@
 
 @if (IsVisible)
 {
-    <div class="modal-backdrop" @onkeydown="BlockKeyboard" @onkeydown:preventDefault @onkeypress="BlockKeyboard" @onkeypress:preventDefault @onkeyup="BlockKeyboard" @onkeyup:preventDefault>
-        <div class="modal-content">
+    <div class="modal-backdrop">
+        <div class="modal-content" tabindex="0" autofocus
+             @onkeydown="BlockKeyboard" @onkeydown:preventDefault @onkeydown:stopPropagation
+             @onkeypress="BlockKeyboard" @onkeypress:preventDefault @onkeypress:stopPropagation
+             @onkeyup="BlockKeyboard" @onkeyup:preventDefault @onkeyup:stopPropagation>
             <h3>Select Category:</h3>
             <ul>
                 @foreach (var category in WordRepository.GetCategoryNames())
@@ -22,15 +25,8 @@
 
     public bool IsVisible { get; private set; }
 
-    // Block keyboard events from propagating to parent components
     private void BlockKeyboard(KeyboardEventArgs e)
     {
-        // Allow Tab key for accessibility navigation
-        if (e.Key != "Tab")
-        {
-            // Prevent default and stop propagation for all other keys
-            // This will prevent the keyboard events from reaching the game
-        }
     }
 
     public void Show()
